@@ -1,0 +1,63 @@
+{
+    "description": "Copy the Ubuntu Xenial AMI into our account so that we can add boot volume encryption.",
+    "min_packer_version": "0.11.0",
+    "variables": {
+        "aws_region": null,
+        "aws_vpc": null,
+        "aws_subnet": null,
+        "ssh_username": null
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "ami_name": "Ubuntu Xenial x86_64 HVM EBS (encrypted) {{isotime \"20060102\"}}",
+            "ami_description": "Ubuntu Xenial x86_64 HVM EBS (encrypted) {{isotime \"20060102\"}}",
+            "instance_type": "t2.micro",
+            "region": "{{user `aws_region`}}",
+            "vpc_id": "{{user `aws_vpc`}}",
+            "subnet_id": "{{user `aws_subnet`}}",
+            "source_ami": "ami-09d2fb69",
+            "source_ami_filter": {
+                "filters": {
+                    "name": "*ubuntu-xenial-16.04-amd64-server-*",
+                    "virtualization-type": "hvm"
+                },
+                "most_recent": true
+            },
+            "ami_virtualization_type": "hvm",
+            "ssh_username": "{{user `ssh_username`}}",
+            "associate_public_ip_address": true,
+            "tags": {
+                "Name": "Encrypted Ubuntu Xenial",
+                "OS": "Ubuntu",
+                "OSVER": "16.04"
+            },
+            "encrypt_boot": true,
+            "ami_block_device_mappings": [
+                {
+                    "device_name": "/dev/sda1",
+                    "volume_type": "gp2",
+                    "volume_size": 8,
+                    "encrypted": true,
+                    "delete_on_termination": true
+                }
+            ],
+            "communicator": "ssh",
+            "ssh_pty": true
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "sudo -S sh '{{.Path}}'",
+            "inline_shebang": "/bin/sh -e -x",
+            "inline": [
+                "echo '** Shreding sensitive data ...'",
+                "shred -u /etc/ssh/*_key /etc/ssh/*_key.pub",
+                "shred -u /root/.*history /home/{{user `ssh_username`}}/.*history",
+                "shred -u /root/.ssh/authorized_keys /home/{{user `ssh_username`}}/.ssh/authorized_keys",
+                "sync; sleep 1; sync"
+            ]
+        }
+    ]
+}
