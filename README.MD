@@ -10,7 +10,7 @@ This will build a Kali AMI that is provisioned using my Ansible code found in [t
 This has built and tested with us-west-2. To find the proper Kali source_ami for another region: 
 1. Find the Kali AMI through the web UI
 2. Create an instance with it
-3. Copy the ```source_ami``` id from the instance info
+3. Copy the ```source_ami``` from the instance info
 4. Feel free to also grab the ```vpc_id```, ```security_group_id```, and the ```subnet_id``` you plan to use as well (assuming you used these when building the instance)
 5. Put these components in for the variables in ```kali.json```
 6. Destroy the instance you built to get this information
