@@ -1,0 +1,34 @@
+{
+  "variables": {
+    "subnet_id": null ,
+    "security_group_id": "null,
+    "vpc_id":  null
+    "instance_type": "t2.medium",
+    "region": "us-west-2",
+    "source_ami": "ami-0f95cde6ebe3f5ec3",
+    "ssh_username" : "ec2-user"
+  },
+
+  "builders": [{
+    "type": "amazon-ebs",
+    "ami_name": "Custom-Kali-{{timestamp}}",
+    "ami_description": "Custom Kali EC2 AMI",
+    "instance_type": "{{user `instance_type`}}",
+    "region": "{{user `region`}}",
+    "vpc_id": "{{user `vpc_id`}}",
+    "subnet_id": "{{user `subnet_id`}}",
+    "security_group_id": "{{user `security_group_id`}}",
+    "source_ami": "{{user `source_ami`}}",
+    "ssh_username": "{{user `ssh_username`}}",
+    "associate_public_ip_address": true,
+    "tags": {
+      "Name" : "Custom Kali Image",
+      "OS":"Kali"
+    }
+  }],
+
+  "provisioners": [{
+    "type": "shell",
+    "script": "scripts/provision_kali.sh"
+  }]
+}
