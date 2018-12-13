@@ -36,7 +36,6 @@ clean_up(){
   sudo shred -u /etc/ssh/*_key /etc/ssh/*_key.pub
   sudo shred -u /home/ec2-user/.ssh/*
   # Get rid of any history
-  sudo shred -u /home/ec2-user/.*history
   sudo shred -u /root/.*history
 }
 

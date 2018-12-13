@@ -11,9 +11,11 @@
 
   "builders": [{
     "type": "amazon-ebs",
-    "ami_name": "Custom-Kali-{{timestamp}}",
+    "ami_name": "Custom-Kali",
     "ami_description": "Custom Kali EC2 AMI",
     "instance_type": "{{user `instance_type`}}",
+    "force_deregister": true,
+    "force_delete_snapshot": true,
     "region": "{{user `region`}}",
     "vpc_id": "{{user `vpc_id`}}",
     "subnet_id": "{{user `subnet_id`}}",
