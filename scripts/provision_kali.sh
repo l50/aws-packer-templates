@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# provision.sh
+# provision_kali.sh
 #
 # Install ansible and then provision a system withthe ansible code 
 # found in this repo: https://github.com/l50/ansible-provision-kali
 #
-# Usage: bash provision.sh
+# Usage: bash provision_kali.sh
 #
 # Author: Jayson Grace, jayson.e.grace@gmail.com, 12/11/2018
 # ----------------------------------------------------------------------------
@@ -21,14 +21,14 @@ install_ansible(){
 }
 
 provision_system(){
-  git clone git://github.com/l50/ansible-provision-kali.git "$HOME/.ansible/Workspace/ansible-provision-kali/"
-  cd "$HOME/.ansible/Workspace/ansible-provision-kali"
+  # Clone playbook in /root directory
+  sudo -u root /bin/bash -c 'git clone git://github.com/l50/ansible-provision-kali.git "$HOME/.ansible/Workspace/ansible-provision-kali/"'
 
-  # Install external playbooks
-  sudo ansible-galaxy install -r requirements.yml -p roles
+  # Install external playbooks to ansible-provision-kali roles directory
+  sudo -u root /bin/bash -c 'pushd "$HOME/.ansible/Workspace/ansible-provision-kali"; ansible-galaxy install -p roles -r requirements.yml; popd'
 
   # Configure and provision Kali
-  sudo ansible-playbook ~/.ansible/Workspace/ansible-provision-kali/site.yml -vvvv
+  sudo -u root /bin/bash -c 'ansible-playbook "$HOME/.ansible/Workspace/ansible-provision-kali/site.yml" -vvvv'
 }
 
 clean_up(){
